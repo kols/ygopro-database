@@ -1,13 +1,22 @@
-- name: Rebase Upstream
-  # You may pin to the exact commit or the version.
-  # uses: imba-tjd/rebase-upstream-action@3727d50bfd7062fb794dcb81268451bdbe9ff5c0
-  uses: imba-tjd/rebase-upstream-action@0.5
-  with:
-    # <user>/<repo> or the full HTTP URL
-    upstream: mycard/ygopro-database
-    # The upstream branch that is rebased on
-    branch: master
-    # Greater than the number of commits the upstream made in a period
-    depth: 1
-    # Do the force push in this action
-    push: true
+# .github/workflows/sync.yml
+name: Rebase Upstream
+on:
+  schedule:
+  - cron: "5 16 * * *"  # run once a week
+  workflow_dispatch:   # run manually
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+      with:
+        fetch-depth: 10  # greater than the number of commits you made
+    - uses: imba-tjd/rebase-upstream-action@master
+      with:
+        # <user>/<repo> or the full HTTP URL
+        upstream: mycard/ygopro-database
+        # The upstream branch that is rebased on
+        branch: master
+        # Do the force push in this action
+        push: true
